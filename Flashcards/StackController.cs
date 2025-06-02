@@ -7,6 +7,7 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using Spectre.Console;
 using Flashcards.Models;
+using Flashcards.DTOs;
 namespace Flashcards
 {
     internal class StackController
@@ -18,16 +19,31 @@ namespace Flashcards
             {
                 var sql = "SELECT * FROM Stacks;";
 
-                var results = connection.Query<Stack>(sql).ToList();
+                var results = connection.Query<StackModel>(sql).ToList();
 
-                var table = new Table();
 
-                //table.AddColumn("")
+                //Converting List of StackModel Objects to StackDTO Objects.
+                List<StackDTO> dtoResults = new List<StackDTO>();
                 foreach (var result in results)
                 {
-                    //table.AddColumn()
-                    Console.WriteLine($"{result.Id} {result.Name}");
+                    StackDTO stackDTO = DTOMapper.toStackDTO(result);
+                    dtoResults.Add(stackDTO);
                 }
+
+
+                var table = new Table();
+                table.ShowRowSeparators();
+
+                table.AddColumn(new TableColumn("Name").Centered());
+
+                foreach (StackDTO result in dtoResults)
+                {
+                    table.AddRow($"{result.Name}");
+                }
+
+                AnsiConsole.Write(table);
+                //table.AddColumn("")
+               
             }
         }
     }

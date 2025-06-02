@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Flashcards.Models
 {
-    internal class Stack
+    internal class StackModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public Stack() { }
+        public StackModel() { } //for dapper
     }
 }
