@@ -10,5 +10,17 @@
             Study,
             ViewStudySessionData,
         }
+
+        internal enum StackManagementOptions
+        { 
+            MainMenu,
+            CurrentStack,
+            ViewFlashcards,
+            ViewXNumberOfCards,
+            CreateFlashcard,
+            EditFlashcard,
+            DeleteFlashcard
+        }
+
     }
 }

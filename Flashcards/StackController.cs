@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dapper;
-using Microsoft.Data.SqlClient;
-using Spectre.Console;
-using Flashcards.Models;
+﻿using Dapper;
 using Flashcards.DTOs;
+using Flashcards.Models;
+using Microsoft.Data.SqlClient;
 namespace Flashcards
 {
     internal class StackController
     {
         DatabaseManager dbManager = new();
-        internal void ViewStacks()
+        internal List<StackDTO> ViewStacks()
         {
             using (var connection = new SqlConnection(dbManager.connectionStringWithDB))
             {
@@ -30,20 +24,8 @@ namespace Flashcards
                     dtoResults.Add(stackDTO);
                 }
 
+                return dtoResults;
 
-                var table = new Table();
-                table.ShowRowSeparators();
-
-                table.AddColumn(new TableColumn("Name").Centered());
-
-                foreach (StackDTO result in dtoResults)
-                {
-                    table.AddRow($"{result.Name}");
-                }
-
-                AnsiConsole.Write(table);
-                //table.AddColumn("")
-               
             }
         }
     }
