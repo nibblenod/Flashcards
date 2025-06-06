@@ -2,6 +2,7 @@
 using Flashcards.DTOs;
 using Flashcards.Models;
 using Microsoft.Data.SqlClient;
+using static Flashcards.Enums;
 
 namespace Flashcards
 {
@@ -32,9 +33,20 @@ namespace Flashcards
             }
         }
 
-        internal void EditFlashcard(int id, List<FlashcardDTO> flashcards)
+        internal void EditFlashcard(int id, List<FlashcardDTO> flashcards, EditType editType, string updateValue)
         {
             string front = flashcards[id - 1].Front;
+
+            using (var connection = new SqlConnection(dbManager.connectionStringWithDB))
+            {
+                string command = editType switch
+                {
+                    EditType.Front => $"UPDATE Flashcards SET Front = '{updateValue}' WHERE front = '{front}'",
+                    EditType.Back => $"UPDATE Flashcards SET Back = '{updateValue}' WHERE front = '{front}'",
+                };
+
+                connection.Execute(command);
+            }
 
         }
 

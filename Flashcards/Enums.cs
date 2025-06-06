@@ -43,5 +43,11 @@ namespace Flashcards
             Delete_Flashcard
         }
 
+        internal enum EditType
+        {
+            Front,
+            Back,
+        }
+
     }
 }

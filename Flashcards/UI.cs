@@ -1,5 +1,8 @@
-﻿using Flashcards.DTOs;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using Flashcards.DTOs;
 using Spectre.Console;
+using static Flashcards.Enums;
 
 namespace Flashcards
 {
@@ -19,6 +22,15 @@ namespace Flashcards
             }
 
             return stackName;
+        }
+
+        internal static (string, EditType) AskForUpdateValue()
+        {
+
+            return (AnsiConsole.Prompt(new TextPrompt<string>("Enter the new value: ")), AnsiConsole.Prompt(new SelectionPrompt<EditType>()
+                        .Title("Update Type")
+                        .AddChoices(Enum.GetValues<EditType>())));
+                     
         }
 
         internal static int FlashcardSelector(List<FlashcardDTO> dtoResults)

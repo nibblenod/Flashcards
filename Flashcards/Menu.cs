@@ -45,6 +45,7 @@ namespace Flashcards
     internal class StackManagementMenu : Menu
         {
             string stackName;
+            int id;
 
             internal StackManagementMenu(string name)
             {
@@ -81,7 +82,7 @@ namespace Flashcards
                             break;
                         case StackManagementOptions.Delete_Flashcard:
                             List<FlashcardDTO> flashcardResults = flashcardController.GiveStackFlashcards(stackName);
-                            int id = UI.FlashcardSelector(flashcardResults);
+                            id = UI.FlashcardSelector(flashcardResults);
                             flashcardController.DeleteFlashcard(id, flashcardResults);
                             AnsiConsole.Markup("[green]Flashcard deleted successfully![/]");
                             Console.ReadLine();
@@ -93,10 +94,13 @@ namespace Flashcards
                             Console.ReadLine();
                             break;
 
-                        //case StackManagementOptions.Edit_Flashcard:
-                        //    List<FlashCardDTO> flashCardResults = flashcardController.GiveStackFlashcards(stackName);
-                        //    int id = UI.FlashcardSelector(flashCardResults);
-                        //    flashcardController.EditFlashcard(id);
+                        case StackManagementOptions.Edit_Flashcard:
+                            List<FlashcardDTO> flashCardResults = flashcardController.GiveStackFlashcards(stackName);
+                            id = UI.FlashcardSelector(flashCardResults);
+                            (string, EditType) updateValuePack = UI.AskForUpdateValue();
+
+                            flashcardController.EditFlashcard(id, flashCardResults, updateValuePack.Item2, updateValuePack.Item1);
+                            break;
 
 
                     }
