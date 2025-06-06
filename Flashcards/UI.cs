@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Flashcards.DTOs;
+﻿using Flashcards.DTOs;
 using Spectre.Console;
 
 namespace Flashcards
@@ -14,17 +9,7 @@ namespace Flashcards
         internal static string StackSelector(List<StackDTO> dtoResults)
         {
 
-            Table table = new Table();
-            table.ShowRowSeparators();
-
-            table.AddColumn("Name");
-            
-            foreach (var result in dtoResults)
-            {
-                table.AddRow($"{result.Name}");
-            }
-
-            AnsiConsole.Write(table);
+            ShowStacks(dtoResults);
 
             string stackName = AnsiConsole.Prompt(new TextPrompt<string>("Enter the name of the stack you want to select: "));
 
@@ -34,9 +19,56 @@ namespace Flashcards
             }
 
             return stackName;
-          
         }
 
-       
+        internal static int FlashcardSelector(List<FlashcardDTO> dtoResults)
+        {
+            ShowFlashcards(dtoResults);
+
+            int id = AnsiConsole.Prompt(new TextPrompt<int>("Enter the id of the flashcard you want to select: "));
+
+            while (!Validator.FlashcardValidator(id, dtoResults))
+            {
+                id = AnsiConsole.Prompt(new TextPrompt<int>("Wrong id entered! Enter the id of the flashcard you want to select: "));
+            }
+
+            return id;
+        }
+
+        private static void ShowStacks(List<StackDTO> stacks)
+        {
+            Table table = new Table();
+            table.ShowRowSeparators();
+
+            table.AddColumn("Name");
+
+            foreach (var result in stacks)
+            {
+                table.AddRow($"{result.Name}");
+            }
+
+            AnsiConsole.Write(table);
+        }
+
+        internal static void ShowFlashcards(List<FlashcardDTO> flashcards, int numberOfFlashcards = -1)
+        {
+            Table table = new Table();
+            table.ShowRowSeparators();
+
+            table.AddColumn("ID");
+            table.AddColumn("Front");
+            table.AddColumn("Back");
+
+            int rowNumber = 1;
+            foreach (var result in flashcards)
+            {
+                table.AddRow($"{rowNumber}", result.Front, result.Back);
+                if (numberOfFlashcards == rowNumber) break;
+                rowNumber++;
+            }
+
+            AnsiConsole.Write(table);
+        }
+
     }
 }

@@ -7,10 +7,11 @@ namespace Flashcards
     internal class StackController
     {
         DatabaseManager dbManager = new();
-        internal List<StackDTO> ViewStacks()
+        internal List<StackDTO> GiveStacks()
         {
             using (var connection = new SqlConnection(dbManager.connectionStringWithDB))
             {
+                
                 var sql = "SELECT * FROM Stacks;";
 
                 var results = connection.Query<StackModel>(sql).ToList();

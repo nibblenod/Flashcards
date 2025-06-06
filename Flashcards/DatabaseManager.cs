@@ -56,7 +56,6 @@ namespace Flashcards
 
                 connection.Execute(command);
 
-
             }
         }
     }

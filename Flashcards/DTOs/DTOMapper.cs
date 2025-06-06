@@ -7,6 +7,8 @@ namespace Flashcards.DTOs
         internal static StackDTO toStackDTO(StackModel stack)
             => new StackDTO { Name = stack.Name };
 
+        internal static FlashcardDTO toFlashcardDTO(Flashcard flashcard)
+            => new FlashcardDTO { Front = flashcard.Front, Back = flashcard.Back };
 
 
     }

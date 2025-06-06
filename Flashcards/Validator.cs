@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Flashcards.DTOs;
+﻿using Flashcards.DTOs;
 
 namespace Flashcards
 {
@@ -16,6 +11,15 @@ namespace Flashcards
                 return true;
             }
             return false;
+        }
+
+        internal static bool FlashcardValidator(int id, List<FlashcardDTO> flashcards)
+        {
+            if (id >= 1 && id <= flashcards.Count())
+            {
+                return true;
+            }
+            else return false;
         }
     }
 }

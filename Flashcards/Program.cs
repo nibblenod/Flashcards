@@ -1,4 +1,6 @@
-﻿using Flashcards;
+﻿using System.ComponentModel.DataAnnotations;
+using Flashcards;
+using static Flashcards.Enums;
 
 DatabaseManager dbManager = new();
 MainMenu mainMenu = new();

@@ -1,25 +1,46 @@
-﻿namespace Flashcards
+﻿using System.ComponentModel.DataAnnotations;
+namespace Flashcards
 {
     internal class Enums
     {
         internal enum MainMenuOptions
         {
             Exit,
-            ManageStacks,
+
+            [Display(Name ="Manage Stacks")]
+            Manage_Stacks,
+
+            [Display(Name = "Manage Flashcards")]
             Flashcards,
+
             Study,
-            ViewStudySessionData,
+
+            [Display(Name = "View Study Session Data")]
+            View_Study_Session_Data,
         }
 
         internal enum StackManagementOptions
-        { 
-            MainMenu,
-            CurrentStack,
-            ViewFlashcards,
-            ViewXNumberOfCards,
-            CreateFlashcard,
-            EditFlashcard,
-            DeleteFlashcard
+        {
+            [Display(Name = "Main Menu")]
+            Main_Menu,
+
+            [Display(Name = "Change Current Stack")]
+            Current_Stack,
+
+            [Display(Name = "View Flashcards")]
+            View_Flashcards,
+
+            [Display(Name = "View X Number of Cards")]
+            View_X_Number_Of_Cards,
+
+            [Display(Name = "Create Flashcard")]
+            Create_Flashcard,
+
+            [Display(Name = "Edit Flashcard")]
+            Edit_Flashcard,
+
+            [Display(Name = "Delete Flashcard")]
+            Delete_Flashcard
         }
 
     }
