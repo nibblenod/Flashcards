@@ -9,6 +9,7 @@ namespace Flashcards
     internal class FlashcardController
     {
         DatabaseManager dbManager = new();
+        DTOMapper dtoMapper = new();
 
         internal List<FlashcardDTO> GiveStackFlashcards(string name)
         {
@@ -23,10 +24,13 @@ namespace Flashcards
                 var results = connection.Query<Flashcard>(command);
 
                 List<FlashcardDTO> flashcardDTOs = new();
+
+                int dtoID = 1;
                 //Convert into DTO
                 foreach (var result in results)
                 {
-                    flashcardDTOs.Add(DTOMapper.toFlashcardDTO(result));
+                    flashcardDTOs.Add(dtoMapper.toFlashcardDTO(result,dtoID));
+                    dtoID++;
                 }
 
                 return flashcardDTOs;
@@ -35,14 +39,14 @@ namespace Flashcards
 
         internal void EditFlashcard(int id, List<FlashcardDTO> flashcards, EditType editType, string updateValue)
         {
-            string front = flashcards[id - 1].Front;
+            int originalID = dtoMapper.FlashcardIDMap[id];
 
             using (var connection = new SqlConnection(dbManager.connectionStringWithDB))
             {
                 string command = editType switch
                 {
-                    EditType.Front => $"UPDATE Flashcards SET Front = '{updateValue}' WHERE front = '{front}'",
-                    EditType.Back => $"UPDATE Flashcards SET Back = '{updateValue}' WHERE front = '{front}'",
+                    EditType.Front => $"UPDATE Flashcards SET Front = '{updateValue}' WHERE ID = '{originalID}'",
+                    EditType.Back => $"UPDATE Flashcards SET Back = '{updateValue}' WHERE ID = '{originalID}'",
                 };
 
                 connection.Execute(command);
@@ -52,16 +56,26 @@ namespace Flashcards
 
         internal void DeleteFlashcard(int id, List<FlashcardDTO> flashcards)
         {
-            string front = flashcards[id - 1].Front;
+            int originalID = dtoMapper.FlashcardIDMap[id];
 
             using (var connection = new SqlConnection(dbManager.connectionStringWithDB))
             {
-                var command = $"DELETE FROM Flashcards WHERE front = '{front}'";
+                var command = $"DELETE FROM Flashcards WHERE ID = '{originalID}'";
                 connection.Execute(command);
             }
 
         }
 
+        internal void CreateFlashcard(string front, string back, string stackName)
+        {
+            using (var connection = new SqlConnection(dbManager.connectionStringWithDB))
+            {
+                string command = $"SELECT ID FROM Stacks where NAME = '{stackName}'";
+                int stackID = connection.ExecuteScalar<int>(command);
+                command = $"INSERT INTO Flashcards VALUES ('{front}', '{back}', '{stackID}')";
+                connection.Execute(command); 
+            }
+        }
 
 
         private string GetIDOfStack(string name)
@@ -70,7 +84,6 @@ namespace Flashcards
             using (var connection = new SqlConnection(dbManager.connectionStringWithDB))
             {
                 string command = @$"SELECT ID from Stacks where Name = '{name}'";
-
                 string id = connection.ExecuteScalar<string>(command);
 
                 return id;

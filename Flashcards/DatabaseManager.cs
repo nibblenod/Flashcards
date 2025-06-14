@@ -38,14 +38,14 @@ namespace Flashcards
                 string command = $@"IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Stacks')
                                BEGIN
                                     CREATE TABLE Stacks (
-                                    ID INT PRIMARY KEY,
+                                    ID INT IDENTITY(1,1) PRIMARY KEY,
                                     NAME VARCHAR(100) NOT NULL);
                                 END
 
                                 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Flashcards')
                                 BEGIN 
                                     CREATE TABLE Flashcards (
-                                    ID INT PRIMARY KEY,
+                                    ID INT IDENTITY(1,1) PRIMARY KEY,
                                     Front VARCHAR(100),
                                     Back VARCHAR(100),
                                     StackID INT NOT NULL,

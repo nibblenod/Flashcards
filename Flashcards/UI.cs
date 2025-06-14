@@ -71,15 +71,21 @@ namespace Flashcards
             table.AddColumn("Front");
             table.AddColumn("Back");
 
-            int rowNumber = 1;
             foreach (var result in flashcards)
             {
-                table.AddRow($"{rowNumber}", result.Front, result.Back);
-                if (numberOfFlashcards == rowNumber) break;
-                rowNumber++;
+                table.AddRow(result.ID.ToString(), result.Front, result.Back);
+                if (numberOfFlashcards == result.ID) break;
             }
 
             AnsiConsole.Write(table);
+        }
+
+        internal static (string, string) CreateFlashcard()
+        {
+            string front = AnsiConsole.Prompt(new TextPrompt<string>("Enter the content for front of the flashcard: "));
+            string back = AnsiConsole.Prompt(new TextPrompt<string>("Enter the content for back of the flashcard: "));
+
+            return (front, back);
         }
 
     }

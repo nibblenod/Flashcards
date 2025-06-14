@@ -98,12 +98,19 @@ namespace Flashcards
                             List<FlashcardDTO> flashCardResults = flashcardController.GiveStackFlashcards(stackName);
                             id = UI.FlashcardSelector(flashCardResults);
                             (string, EditType) updateValuePack = UI.AskForUpdateValue();
-
                             flashcardController.EditFlashcard(id, flashCardResults, updateValuePack.Item2, updateValuePack.Item1);
                             break;
 
+                        case StackManagementOptions.Create_Flashcard:
+                            UI.ShowFlashcards(flashcardController.GiveStackFlashcards(stackName));
+                            (string, string) flashcardInfo = UI.CreateFlashcard();
+                            flashcardController.CreateFlashcard(flashcardInfo.Item1, flashcardInfo.Item2, stackName);
+                            AnsiConsole.Markup("[green]Flashcard created successfully[/]");
+                            break;
+                            
 
                     }
+
                 }
 
 
