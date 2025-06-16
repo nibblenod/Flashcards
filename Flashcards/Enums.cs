@@ -18,8 +18,15 @@ namespace Flashcards
             [Display(Name = "View Study Session Data")]
             View_Study_Session_Data,
         }
-
         internal enum StackManagementOptions
+        {
+            Add,
+            Remove,
+            Edit,
+            View,
+            Exit
+        }
+        internal enum FlashcardManagementOptions
         {
             [Display(Name = "Main Menu")]
             Main_Menu,

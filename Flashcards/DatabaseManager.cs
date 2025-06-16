@@ -39,7 +39,7 @@ namespace Flashcards
                                BEGIN
                                     CREATE TABLE Stacks (
                                     ID INT IDENTITY(1,1) PRIMARY KEY,
-                                    NAME VARCHAR(100) NOT NULL);
+                                    NAME VARCHAR(100) UNIQUE NOT NULL);
                                 END
 
                                 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Flashcards')
@@ -49,7 +49,8 @@ namespace Flashcards
                                     Front VARCHAR(100),
                                     Back VARCHAR(100),
                                     StackID INT NOT NULL,
-                                    FOREIGN KEY (StackID) REFERENCES Stacks(ID)
+                                    FOREIGN KEY (StackID) REFERENCES Stacks(ID) ON DELETE CASCADE
+        
                                     );
                                 END 
                                 ";

@@ -47,7 +47,7 @@ namespace Flashcards
             return id;
         }
 
-        private static void ShowStacks(List<StackDTO> stacks)
+        internal static void ShowStacks(List<StackDTO> stacks)
         {
             Table table = new Table();
             table.ShowRowSeparators();
@@ -88,5 +88,10 @@ namespace Flashcards
             return (front, back);
         }
 
+        internal static string AddStack()
+        {
+            string stackName = AnsiConsole.Prompt(new TextPrompt<string>("Enter the name of the stack: "));
+            return stackName;
+        }
     }
 }

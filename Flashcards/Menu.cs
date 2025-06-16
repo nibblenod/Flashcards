@@ -1,8 +1,7 @@
-﻿using Spectre.Console;
-using static Flashcards.Enums;
+﻿using System.ComponentModel.DataAnnotations;
 using Flashcards.DTOs;
-using System.Diagnostics;
-using System.ComponentModel.DataAnnotations;
+using Spectre.Console;
+using static Flashcards.Enums;
 namespace Flashcards
 {
     internal abstract class Menu
@@ -30,24 +29,28 @@ namespace Flashcards
                     case MainMenuOptions.Exit:
                         exitApp = true;
                         break;
-                    case MainMenuOptions.Manage_Stacks:
+                    case MainMenuOptions.Flashcards:
                         List<StackDTO> stackResults = stackController.GiveStacks();
                         string stackName = UI.StackSelector(stackResults);
 
-                        StackManagementMenu menu = new(stackName);
-                        menu.PrintMenu();
+                        FlashcardManagementMenu flashcardMenu = new(stackName);
+                        flashcardMenu.PrintMenu();
                         break;
-                  
+                    case MainMenuOptions.Manage_Stacks:
+                        StackManagementMenu stackMenu = new();
+                        stackMenu.PrintMenu();
+                        break;
+
                 }
             }
         }
 
-    internal class StackManagementMenu : Menu
+        internal class FlashcardManagementMenu : Menu
         {
             string stackName;
             int id;
 
-            internal StackManagementMenu(string name)
+            internal FlashcardManagementMenu(string name)
             {
                 stackName = name;
             }
@@ -57,30 +60,30 @@ namespace Flashcards
                 while (!exitApp)
                 {
                     Console.Clear();
-                    StackManagementOptions userSelection = AnsiConsole.Prompt(new SelectionPrompt<StackManagementOptions>()
+                    FlashcardManagementOptions userSelection = AnsiConsole.Prompt(new SelectionPrompt<FlashcardManagementOptions>()
                         .Title($"Current working stack: {stackName}")
-                        .AddChoices(Enum.GetValues<StackManagementOptions>())
+                        .AddChoices(Enum.GetValues<FlashcardManagementOptions>())
                         .UseConverter(option => option.GetAttribute<DisplayAttribute>()?.Name ?? option.ToString()));
 
 
                     switch (userSelection)
-                        {
-                        case StackManagementOptions.Main_Menu:
+                    {
+                        case FlashcardManagementOptions.Main_Menu:
                             exitApp = true;
                             break;
 
-                        case StackManagementOptions.Current_Stack:
+                        case FlashcardManagementOptions.Current_Stack:
                             List<StackDTO> stackResults = stackController.GiveStacks();
                             stackName = UI.StackSelector(stackResults);
                             break;
 
-                        case StackManagementOptions.View_Flashcards:
+                        case FlashcardManagementOptions.View_Flashcards:
 
                             UI.ShowFlashcards(flashcardController.GiveStackFlashcards(stackName));
                             Console.ReadLine();
-                 
+
                             break;
-                        case StackManagementOptions.Delete_Flashcard:
+                        case FlashcardManagementOptions.Delete_Flashcard:
                             List<FlashcardDTO> flashcardResults = flashcardController.GiveStackFlashcards(stackName);
                             id = UI.FlashcardSelector(flashcardResults);
                             flashcardController.DeleteFlashcard(id, flashcardResults);
@@ -88,26 +91,26 @@ namespace Flashcards
                             Console.ReadLine();
                             break;
 
-                        case StackManagementOptions.View_X_Number_Of_Cards:
+                        case FlashcardManagementOptions.View_X_Number_Of_Cards:
                             int numberOfFlashcards = AnsiConsole.Prompt(new TextPrompt<int>("Enter the number of flashcards you want to see: "));
                             UI.ShowFlashcards(flashcardController.GiveStackFlashcards(stackName), numberOfFlashcards);
                             Console.ReadLine();
                             break;
 
-                        case StackManagementOptions.Edit_Flashcard:
+                        case FlashcardManagementOptions.Edit_Flashcard:
                             List<FlashcardDTO> flashCardResults = flashcardController.GiveStackFlashcards(stackName);
                             id = UI.FlashcardSelector(flashCardResults);
                             (string, EditType) updateValuePack = UI.AskForUpdateValue();
                             flashcardController.EditFlashcard(id, flashCardResults, updateValuePack.Item2, updateValuePack.Item1);
                             break;
 
-                        case StackManagementOptions.Create_Flashcard:
+                        case FlashcardManagementOptions.Create_Flashcard:
                             UI.ShowFlashcards(flashcardController.GiveStackFlashcards(stackName));
                             (string, string) flashcardInfo = UI.CreateFlashcard();
                             flashcardController.CreateFlashcard(flashcardInfo.Item1, flashcardInfo.Item2, stackName);
                             AnsiConsole.Markup("[green]Flashcard created successfully[/]");
                             break;
-                            
+
 
                     }
 
@@ -120,6 +123,75 @@ namespace Flashcards
             }
         }
 
+        internal class StackManagementMenu : Menu
+        {
+            internal override void PrintMenu()
+            {
+                while (!exitApp)
+                {
+                    Console.Clear();
+                    StackManagementOptions userSelection = AnsiConsole.Prompt(new SelectionPrompt<StackManagementOptions>().Title("What do you want to do?").
+                    AddChoices(Enum.GetValues<StackManagementOptions>())
+                     .UseConverter(option => option.GetAttribute<DisplayAttribute>()?.Name ?? option.ToString()));
+
+
+                    switch (userSelection)
+                    {
+                        case StackManagementOptions.View:
+                            List<StackDTO> stackDTOs = stackController.GiveStacks();
+                            UI.ShowStacks(stackDTOs);
+                            Console.ReadLine();
+                            break;
+                        case StackManagementOptions.Exit:
+                            exitApp = true;
+                            break;
+                        case StackManagementOptions.Add:
+                            string stackName = UI.AddStack();
+                            (bool, string?) res = stackController.CreateStack(stackName);
+                            if (res.Item1)
+                            {
+                                AnsiConsole.Markup("[green]Stack created successfully![/]");
+                            }
+                            else AnsiConsole.Markup($"[red]Error in creating stack: {res.Item2}[/]");
+                            Console.ReadLine();
+
+                            break;
+
+                        case StackManagementOptions.Edit:
+                            stackDTOs = stackController.GiveStacks();
+                            stackName = UI.StackSelector(stackController.GiveStacks());
+                            int index = stackDTOs.FindIndex(dto => stackName == dto.Name);
+                            string newStackName = UI.AddStack();
+                            res = stackController.EditStack(stackDTOs[index].ID, newStackName);
+                            if (res.Item1)
+                            {
+                                AnsiConsole.Markup("[green]Stack edited successfully![/]");
+                            }
+                            else AnsiConsole.Markup($"[red]Error in editing stack: {res.Item2}[/]");
+                            Console.ReadLine();
+                            break;
+
+                        case StackManagementOptions.Remove:
+                            stackDTOs = stackController.GiveStacks();
+                            stackName = UI.StackSelector(stackController.GiveStacks());
+                            index = stackDTOs.FindIndex(dto => stackName == dto.Name);
+                            res = stackController.RemoveStack(stackDTOs[index].ID);
+                            if (res.Item1)
+                            {
+                                AnsiConsole.Markup("[green]Stack removed successfully![/]");
+                            }
+                            else AnsiConsole.Markup($"[red]Error in removing stack: {res.Item2}[/]");
+                            Console.ReadLine();
+                            break;
+                    }
+                }
+
+
+
+
+            }
+        }
+
     }
-    
+
 }

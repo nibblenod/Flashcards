@@ -3,20 +3,20 @@ using Flashcards.Models;
 
 namespace Flashcards.DTOs
 {
-    internal class DTOMapper
+    internal static class DTOMapper
     {
-        private Dictionary<int, int> _FlashcardIDMap = new Dictionary<int, int>();
-        private Dictionary<int, int> _StackIDMap = new Dictionary<int, int>();
+        private static Dictionary<int, int> _FlashcardIDMap = new Dictionary<int, int>();
+        private static Dictionary<int, int> _StackIDMap = new Dictionary<int, int>();
 
-        public Dictionary<int, int> FlashcardIDMap
+        public static Dictionary<int, int> FlashcardIDMap
         {
             get { return _FlashcardIDMap; }
         }
-        public Dictionary<int, int> StackIDMap
+        public static Dictionary<int, int> StackIDMap
         {
             get { return _StackIDMap; }
         }
-        internal StackDTO toStackDTO(StackModel stack, int dtoID)
+        internal static StackDTO toStackDTO(StackModel stack, int dtoID)
         {
             int originalID = stack.Id;
 
@@ -24,7 +24,7 @@ namespace Flashcards.DTOs
             return new StackDTO { ID = dtoID ,Name = stack.Name };
         }
 
-        internal FlashcardDTO toFlashcardDTO(Flashcard flashcard, int dtoID)
+        internal static FlashcardDTO toFlashcardDTO(Flashcard flashcard, int dtoID)
         {
             int originalID = Convert.ToInt32(flashcard.ID);
 
