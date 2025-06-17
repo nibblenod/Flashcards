@@ -50,9 +50,20 @@ namespace Flashcards
                                     Back VARCHAR(100),
                                     StackID INT NOT NULL,
                                     FOREIGN KEY (StackID) REFERENCES Stacks(ID) ON DELETE CASCADE
-        
                                     );
                                 END 
+
+                                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'StudySessions')
+                                BEGIN
+                                    CREATE TABLE StudySessions (
+                                    ID INT IDENTITY(1,1) PRIMARY KEY,
+                                    SessionDate DATE,
+                                    StackName VARCHAR(100) NOT NULL,
+                                    Score INT,
+                                    StackID INT NOT NULL,
+                                    FOREIGN KEY (StackID) REFERENCES Stacks(ID) ON DELETE CASCADE
+                                );
+                                END
                                 ";
 
                 connection.Execute(command);

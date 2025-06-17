@@ -51,7 +51,7 @@ namespace Flashcards
         {
             Table table = new Table();
             table.ShowRowSeparators();
-
+            table.Title("Stacks");
             table.AddColumn("Name");
 
             foreach (var result in stacks)
@@ -62,11 +62,46 @@ namespace Flashcards
             AnsiConsole.Write(table);
         }
 
+        internal static string GetUserAnswer()
+        {
+            string userAnswer = AnsiConsole.Prompt(new TextPrompt<string>("Enter the answer: "));
+
+            return userAnswer;
+
+        }
+        internal static void ShowStudyFlashcard(FlashcardDTO flashcard)
+        {
+            Table table = new();
+            table.Title("Flashcard");
+
+            table.ShowRowSeparators();
+            table.AddColumn("Front");
+            table.AddRow($"{flashcard.Front}");
+
+            AnsiConsole.Write(table);
+        }
+        internal static void ShowStudySessions(List<StudySessionDTO> studySessions)
+        {
+            Table table = new();
+            table.ShowRowSeparators();
+            table.Title("Study Sessions");
+            table.AddColumn("ID");
+            table.AddColumn("Date");
+            table.AddColumn("Stack Name");
+            table.AddColumn("Percentage");
+
+            foreach (var session in studySessions)
+            {
+                table.AddRow(session.ID.ToString(), session.SessionDate.ToShortDateString(), session.StackName, session.Score.ToString());
+            }
+
+            AnsiConsole.Write(table);
+        }
         internal static void ShowFlashcards(List<FlashcardDTO> flashcards, int numberOfFlashcards = -1)
         {
             Table table = new Table();
             table.ShowRowSeparators();
-
+            table.Title("Flashcards");
             table.AddColumn("ID");
             table.AddColumn("Front");
             table.AddColumn("Back");
@@ -79,6 +114,7 @@ namespace Flashcards
 
             AnsiConsole.Write(table);
         }
+
 
         internal static (string, string) CreateFlashcard()
         {
